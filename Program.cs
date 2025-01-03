@@ -30,6 +30,8 @@ cookieCookbook.OpenCookbook();
 public class CookieCookbook
 {
     const FileFormat FILE_FORMAT = FileFormat.Text;
+    const string FILE_PATH = "recipes.txt";
+
     public List<Recipe> _recipes;
     public List<Ingredient> _availableIngredients =
     [
@@ -65,13 +67,6 @@ public class CookieCookbook
         _currentRecipe.Print();
     }
 
-    private void AddCurrentRecipeToCookbook()
-    {
-        StringsTWriteListToFile(_currentRecipe, FILE_FORMAT);
-    }
-
-
-
     public bool GetIngredients()
     {
         bool isRecipeEmpty = true;
@@ -98,6 +93,18 @@ public class CookieCookbook
             }
         } while(!didUserEndRecipe);
         return isRecipeEmpty;
+    }
+
+    private void AddCurrentRecipeToCookbook()
+    {
+        List<int> ingredientsList = _currentRecipe.GetIngredients();
+        if(FILE_FORMAT = FileFormat.Text)
+        {
+            TextStringsRepository.Write(FILE_PATH, ingredientsList);
+        } else
+        {
+            JsonStringsRepository.Write(FILE_PATH, ingredientsList);
+        }
     }
 }
 

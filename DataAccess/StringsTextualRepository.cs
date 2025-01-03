@@ -23,12 +23,11 @@ using System.Text.Json;
 
 public interface IStringsTextualRepository
 {
-    protected static readonly string Separator = Environment.NewLine;
+    const string SEPARATOR = Environment.NewLine;
 
-    public List<string> Read(string filePath);
+    List<string> Read(string filePath);
 
-    public void Write(
-        string filePath, List<string> names);
+    void Write(string filePath, List<string> names);
 }
 
 public class JsonStringsRepository : IStringsTextualRepository
@@ -37,16 +36,15 @@ public class JsonStringsRepository : IStringsTextualRepository
     {
         var fileContents = File.ReadAllText(filePath);
         var fileContentsAsObjects = JsonSerializer.Deserialize(fileContents);
-        return fileContentsAsObjects.Split(Separator).ToList();
+        return fileContentsAsObjects.Split(SEPARATOR).ToList();
     }
 
-    public override void Write(
-        string filePath, List<string> names)
+    public override void Write(string filePath, List<string> names)
     {
         var namesAsJson = JsonSerializer.Serialize(names);
         File.WriteAllText(
             filePath,
-            string.Join(Separator, namesAsJson));
+            string.Join(SEPARATOR, namesAsJson));
     }
 }
 
@@ -55,15 +53,14 @@ public class TextStringsRepository : IStringsTextualRepository
     public override List<string> Read(string filePath)
     {
         var fileContents = File.ReadAllText(filePath);
-        return fileContents.Split(Separator).ToList();
+        return fileContents.Split(SEPARATOR).ToList();
     }
 
-    public override void Write(
-        string filePath, List<string> names)
+    public override void Write(string filePath, List<int> numbers)
     {
         File.WriteAllText(
             filePath,
-            string.Join(Separator, names));
+            string.Join(SEPARATOR, numbers));
     }
 }
 
