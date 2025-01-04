@@ -41,11 +41,6 @@ public class Recipe
     }
     public List<int> GetIngredientList()
     {
-        var ingredientAsIntList = new List<int>();
-        foreach (Ingredient ingredient in Ingredients)
-        {
-            ingredientAsIntList.Add(ingredient.Id);
-        }
-        return ingredientAsIntList;
+
     }
 }

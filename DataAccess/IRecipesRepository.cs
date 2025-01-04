@@ -21,46 +21,48 @@
 // 
 using System.Text.Json;
 
-public interface IStringsTextualRepository
+namespace CookieCookbook.DataAccess;
+
+public interface IRecipesRepository
 {
-    const string SEPARATOR = Environment.NewLine;
+    List<int> Read(string filePath);
 
-    List<string> Read(string filePath);
-
-    void Write(string filePath, List<string> names);
+    void Write(string filePath, List<Recipe> numbers);
 }
 
-public class JsonStringsRepository : IStringsTextualRepository
+
+public class RecipesJsonRepository : IRecipesRepository
 {
-    public override List<string> Read(string filePath)
+    private readonly string SEPARATOR = Environment.NewLine;
+
+    public List<int> Read(string filePath)
     {
         var fileContents = File.ReadAllText(filePath);
         var fileContentsAsObjects = JsonSerializer.Deserialize(fileContents);
         return fileContentsAsObjects.Split(SEPARATOR).ToList();
     }
 
-    public override void Write(string filePath, List<string> names)
+    public void Write(string filePath, List<Recipe> numbers)
     {
-        var namesAsJson = JsonSerializer.Serialize(names);
+        var namesAsJson = JsonSerializer.Serialize(numbers);
         File.WriteAllText(
             filePath,
             string.Join(SEPARATOR, namesAsJson));
     }
 }
 
-public class TextStringsRepository : IStringsTextualRepository
+public class RecipesTextRepository : IRecipesRepository
 {
-    public override List<string> Read(string filePath)
+    private readonly string SEPARATOR = Environment.NewLine;
+    public List<Recipe> Read(string filePath)
     {
         var fileContents = File.ReadAllText(filePath);
         return fileContents.Split(SEPARATOR).ToList();
     }
 
-    public override void Write(string filePath, List<int> numbers)
+    public void Write(string filePath, List<Recipe> numbers)
     {
-        File.WriteAllText(
-            filePath,
-            string.Join(SEPARATOR, numbers));
+        File.WriteAllText(filePath, string.Join(SEPARATOR, numbers));
     }
 }
 

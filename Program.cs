@@ -21,91 +21,24 @@
 // 
 
 using System.Text.Json;
+using DataAccess;
 
+namespace CookieCookbook;
+
+
+const FileFormat FILE_FORMAT = FileFormat.Text;
+const string FILE_PATH = "recipes.txt";
+
+IRecipesRepository recipesRepository = (FILE_FORMAT == FileFormat.Text) ? 
+    new RecipesTextRepository() :
+    new RecipesJsonRepository();
+
+IRecipesConsoleUserInteraction userInteractions = new();
 
 var recipes = new List<Recipe>();
-var cookieCookbook = new CookieCookbook(recipes);
-cookieCookbook.OpenCookbook();
+var cookieCookbook = new CookieCookbook(recipesUserInteraction, recipesRepository, FILE_PATH);
+cookieCookbook.Open();
 
-public class CookieCookbook
-{
-    const FileFormat FILE_FORMAT = FileFormat.Text;
-    const string FILE_PATH = "recipes.txt";
 
-    public List<Recipe> _recipes;
-    public List<Ingredient> _availableIngredients =
-    [
-        new Flour(),
-        new Sugar(),
-        new Eggs(),
-        new Butter(),
-        new BakingPowder(),
-        new Vanilla(),
-        new ChocolateChips()
-    ];
-    public Recipe _currentRecipe = new Recipe();
-
-    public CookieCookbook(List<Recipe> recipes)
-    {
-        _recipes = recipes;
-    }
-
-    public void OpenCookbook()
-    {
-        ConsolePrinter.PrintMessage($"Welcome to the Cookie Cookbook! {Environment.NewLine}");
-        ConsolePrinter.PrintRecipes(_recipes);
-
-        ConsolePrinter.PrintMessage("Creating recipe!");
-        bool isRecipeEmpty = GetIngredients();
-        if (isRecipeEmpty)
-        {
-            System.Console.WriteLine("No ingredients selected. Recipe not created.");
-            return;
-        } 
-        AddCurrentRecipeToCookbook();
-        System.Console.WriteLine("Recipe created:");
-        _currentRecipe.Print();
-    }
-
-    public bool GetIngredients()
-    {
-        bool isRecipeEmpty = true;
-        bool didUserEndRecipe = false;
-        do
-        {
-            ConsolePrinter.PrintIngredients(_availableIngredients);
-            ConsolePrinter.PrintMessage("Enter an ingredient number or press any other key to finish:");
-
-            if (int.TryParse(Console.ReadLine(), out int ingredientId))
-            {
-                Ingredient selectedIngredient = _availableIngredients.Find(ingredient => ingredient.Id == ingredientId);   
-                if (selectedIngredient is not null)
-                {
-                    _currentRecipe.Add(selectedIngredient);
-                    isRecipeEmpty = false; 
-                } else 
-                {
-                    ConsolePrinter.PrintMessage("Ingredient not found.");
-                }  
-            } else 
-            {
-                didUserEndRecipe = true;
-            }
-        } while(!didUserEndRecipe);
-        return isRecipeEmpty;
-    }
-
-    private void AddCurrentRecipeToCookbook()
-    {
-        List<int> ingredientsList = _currentRecipe.GetIngredients();
-        if(FILE_FORMAT = FileFormat.Text)
-        {
-            TextStringsRepository.Write(FILE_PATH, ingredientsList);
-        } else
-        {
-            JsonStringsRepository.Write(FILE_PATH, ingredientsList);
-        }
-    }
-}
 
 
